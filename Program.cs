@@ -2,90 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Aktiveringsuppgift_Programmering_2
+namespace Moment_4_uppgift_D
 {
     internal class Program
     {
-        // Deklarera en array med 5 bilmärken
-        static string[] cars = { "Volvo", "BMW", "Ford", "Mazda", "Audi" };
-
         static void Main(string[] args)
         {
-            bool running = true;
+            // Ber användaren om text
+            Console.WriteLine("Skriv en text med mist 50 ord. För att kontrollera ord i din text klicka enter:");
 
-            // While-loop som håller programmet igång tills användaren väljer att avsluta
-            while (running)
+            // Läs in texten
+            string text = Console.ReadLine();
+
+            // Kontrollera att texten har minst 50 ord
+            while (text.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length < 50)
             {
-                // Visa menyn och få användarens val
-                Console.WriteLine("Välj ett alternativ:");
-                Console.WriteLine("1. Visa alla fordon");
-                Console.WriteLine("2. Ersätt ett fordon");
-                Console.WriteLine("3. Avsluta");
-                string input = Console.ReadLine(); // Läser användarens val
+                Console.WriteLine("Texten måste innehålla minst 50 ord. Vänligen försök igen: ");
+                text = Console.ReadLine();
+            }
 
-                switch (input)
+            // Skapa en Dictionry för att räkna orden
+            Dictionary<string, int> wordCount = new Dictionary<string, int>();
+
+            // Ta bort onödiga tecken
+            string[] words = Regex.Replace(text, @"[.,!?]", "").Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Kollar igenom alla ord
+            foreach (string word in words)
+            {
+                if (!string.IsNullOrWhiteSpace(word))
                 {
-                    case "1":
-                        // Anropa metoden för att visa alla fordon
-                        DisplayCars();
-                        break;
-                    case "2":
-                        // Anropa metoden för att ersätta ett fordon
-                        ReplaceCar();
-                        break;
-                    case "3":
-                        // Avsluta programmet
-                        running = false;
-                        Console.WriteLine("Avslutar programmet...");
-                        break;
-                    default:
-                        Console.WriteLine("Felaktigt val, försök igen.");
-                        break;
+                    if (wordCount.ContainsKey(word))
+                    {
+                        wordCount[word]++;
+                    }
+                    else
+                    {
+                        wordCount[word] = 1;
+                    }
                 }
-
-                Console.WriteLine(); // Ger lite mellanrum mellan varje menyvisning
             }
-        }
 
-        // Metod för att visa alla fordon i arrayen
-        static void DisplayCars()
-        {
-            Console.WriteLine("Nuvarande fordon i listan:");
+            // Sortera efter antal och resultatet
+            var sortedWordCount = wordCount.OrderByDescending(x => x.Value);
 
-            // For-loop för att skriva ut varje fordon i arrayen
-            for (int i = 0; i < cars.Length; i++)
+            // Skriver ut resultaten
+            Console.WriteLine("\nFörekomst av ord i texten:");
+            foreach (var pair in sortedWordCount)
             {
-                Console.WriteLine($"{i + 1}. {cars[i]}");
-            }
-        }
-
-        // Metod för att ersätta ett fordon i arrayen
-        static void ReplaceCar()
-        {
-            // Visa nuvarande fordon med en foreach-loop
-            Console.WriteLine("Vilket fordon vill du ersätta? (ange nummer 1-5):");
-
-            int index = 1;
-            foreach (var car in cars)
-            {
-                Console.WriteLine($"{index}. {car}");
-                index++;
+                Console.WriteLine($"{pair.Key}: {pair.Value}");
             }
 
-            // Hämta användarens val och validera att det är ett giltigt nummer
-            if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= cars.Length)
-            {
-                Console.WriteLine($"Du valde att ersätta {cars[choice - 1]}. Ange det nya fordonet:");
-                string newCar = Console.ReadLine(); // Läser in det nya fordonet
-                cars[choice - 1] = newCar; // Ersätter fordonet på vald plats
-                Console.WriteLine($"Fordonet på plats {choice} har ersatts med {newCar}.");
-            }
-            else
-            {
-                Console.WriteLine("Felaktigt val, försök igen.");
-            }
+            // Vänta på att användaren trycker på något för att avsluta
+            Console.ReadLine();
         }
     }
 }
