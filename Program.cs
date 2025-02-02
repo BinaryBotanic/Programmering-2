@@ -4,88 +4,213 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aktiveringsuppgift_Programmering_2
+namespace Moment_3.Bedömningsuppgift_Geometri
 {
-    internal class Program
+    abstract class Figur
     {
-        // Deklarera en array med 5 bilmärken
-        static string[] cars = { "Volvo", "BMW", "Ford", "Mazda", "Audi" };
+        // Abstrakta egenskaper för area och omkrets
+        public abstract double Area { get; }
+        public abstract double Omkrets { get; }
 
+        // Abstract metoder för subklasser
+        public abstract double getArea();
+        public abstract double getOmkrets();
+        public abstract string getFigureName();
+    }
+
+    // Subklass för Cirkel
+    class Cirkel : Figur
+    {
+        private double radie;
+
+        public Cirkel(double radie)
+        {
+            this.radie = radie; 
+        }
+
+        // Beräkning av area
+        public override double Area => Math.PI * radie * radie;
+
+        // Beräkning av omkrets
+        public override double Omkrets => 2 * Math.PI * radie;
+
+        // Returnerar figurens area
+        public override double getArea() => Area;
+
+        // Returnerar figurens omkrets
+        public override double getOmkrets() => Omkrets;
+
+        // Returnerar namnet på figure
+        public override string getFigureName() => "Cirkel";
+
+        }
+
+    // Subklass Rektangel
+    class Rektangel : Figur
+    {
+        // Lagrar längd och bredd
+        private double längd;
+        private double bredd;
+
+        // Integrerar mått för rektangel
+        public Rektangel(double längd, double bredd)
+        {
+            this.längd = längd;
+            this.bredd = bredd;
+        }
+
+        // Beräkning av area
+        public override double Area => längd * bredd;
+
+        // Beräkning av omkrets
+        public override double Omkrets => 2 * (längd + bredd);
+
+        // Returnerar figurens area
+        public override double getArea() => Area;
+
+        // Returnerar figurens omkrets
+        public override double getOmkrets() => Omkrets;
+
+        // Returnerar namnet på figure
+        public override string getFigureName() => "Rektangel";
+    }
+
+    // Subklass kvadrat
+    class Kvadrat : Figur
+    {
+        // Lagrar sidolängd
+        private double sida;
+
+        public Kvadrat(double sida)
+        {
+            this.sida = sida;
+        }
+
+        // Beräkning av area
+        public override double Area => sida * sida;
+
+        // Beräkning av omkrets
+        public override double Omkrets => 4 * sida;
+
+        // Returnerar figurens are
+        public override double getArea() => Area;
+
+        // Returnerar figurens omkrets
+        public override double getOmkrets() => Omkrets;
+        
+        // Returnerar namnet på figure
+        public override string getFigureName() => "Kvadrat";
+    }
+
+    // Subklass Triangel
+    class Triangel : Figur
+    {
+        // Lagrar info om längd på sida a, b och c
+        private double a, b, c;
+
+        public Triangel(double a, double b, double c)
+        {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+        }
+        public override double Area
+        {
+            get
+            {
+                // BEräknar halva omkrättsen
+                double s = (a + b + c) / 2;
+
+                // Använder Fprmel för att retunera triangelns area
+                return Math.Sqrt(s * (s - a) * (s - b) * (s - c));
+            }
+        }
+
+        // Omkrets för triangel
+        public override double Omkrets => a + b + c;
+
+        // Returnerar figurens are
+        public override double getArea() => Area;
+
+        // Returnerar figurens omkrets
+        public override double getOmkrets() => Omkrets;
+
+        // Returnerar namnet på figure
+        public override string getFigureName() => "Triangel";
+    }
+
+    // Meny för användare
+    class Program
+    {
         static void Main(string[] args)
         {
-            bool running = true;
-
-            // While-loop som håller programmet igång tills användaren väljer att avsluta
-            while (running)
+            bool keepRunning = true;
+            while (keepRunning)
             {
-                // Visa menyn och få användarens val
-                Console.WriteLine("Välj ett alternativ:");
-                Console.WriteLine("1. Visa alla fordon");
-                Console.WriteLine("2. Ersätt ett fordon");
-                Console.WriteLine("3. Avsluta");
-                string input = Console.ReadLine(); // Läser användarens val
+                Console.WriteLine("Vänligen välj ett av följande alternativ:");
+                Console.WriteLine("1. Cirkel");
+                Console.WriteLine("2. Rektangel");
+                Console.WriteLine("3. Kvadrat");
+                Console.WriteLine("4. Triangel");
+                Console.WriteLine("5. Avsluta programmet");
 
-                switch (input)
+                int choice;
+                if (!int.TryParse(Console.ReadLine(), out choice))
                 {
-                    case "1":
-                        // Anropa metoden för att visa alla fordon
-                        DisplayCars();
-                        break;
-                    case "2":
-                        // Anropa metoden för att ersätta ett fordon
-                        ReplaceCar();
-                        break;
-                    case "3":
-                        // Avsluta programmet
-                        running = false;
-                        Console.WriteLine("Avslutar programmet...");
-                        break;
-                    default:
-                        Console.WriteLine("Felaktigt val, försök igen.");
-                        break;
+                    Console.WriteLine("Felaktig inmatning, var vänlig och försök igen");
+                    continue;
                 }
 
-                Console.WriteLine(); // Ger lite mellanrum mellan varje menyvisning
+                switch (choice)
+                {
+                    case 1:
+                        Console.WriteLine("Ange radie för cirkeln");
+                        double radie = double.Parse(Console.ReadLine());
+                        Cirkel cirkel = new Cirkel(radie);
+                        PrintFigureInfo(cirkel);
+                        break;
+
+                    case 2:
+                        Console.Write("Ange längd för rektangeln: ");
+                        double längd = double.Parse(Console.ReadLine());
+                        Console.Write("Ange bredd för rektangeln: ");
+                        double bredd = double.Parse(Console.ReadLine());
+                        Rektangel rektangel = new Rektangel(längd, bredd);
+                        PrintFigureInfo(rektangel);
+                        break;
+                    case 3:
+                        Console.Write("Ange sida för kvadraten: ");
+                        double sida = double.Parse(Console.ReadLine());
+                        Kvadrat kvadrat = new Kvadrat(sida);
+                        PrintFigureInfo(kvadrat);
+                        break;
+                    case 4:
+                        Console.Write("Ange sida a för triangeln: ");
+                        double a = double.Parse(Console.ReadLine());
+                        Console.Write("Ange sida b för triangeln: ");
+                        double b = double.Parse(Console.ReadLine());
+                        Console.Write("Ange sida c för triangeln: ");
+                        double c = double.Parse(Console.ReadLine());
+                        Triangel triangel = new Triangel(a, b, c);
+                        PrintFigureInfo(triangel);
+                        break;
+                    case 5:
+                        keepRunning = false;
+                        break;
+                    default:
+                        Console.WriteLine("Felaktigt val, var vänlig och försök igen");
+                        break;
+                }
             }
         }
 
-        // Metod för att visa alla fordon i arrayen
-        static void DisplayCars()
+        //Metod för att skriva ut info om figurer
+        static void PrintFigureInfo(Figur figur)
         {
-            Console.WriteLine("Nuvarande fordon i listan:");
-
-            // For-loop för att skriva ut varje fordon i arrayen
-            for (int i = 0; i < cars.Length; i++)
-            {
-                Console.WriteLine($"{i + 1}. {cars[i]}");
-            }
-        }
-
-        // Metod för att ersätta ett fordon i arrayen
-        static void ReplaceCar()
-        {
-            // Visa nuvarande fordon med en foreach-loop
-            Console.WriteLine("Vilket fordon vill du ersätta? (ange nummer 1-5):");
-
-            int index = 1;
-            foreach (var car in cars)
-            {
-                Console.WriteLine($"{index}. {car}");
-                index++;
-            }
-
-            // Hämta användarens val och validera att det är ett giltigt nummer
-            if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= cars.Length)
-            {
-                Console.WriteLine($"Du valde att ersätta {cars[choice - 1]}. Ange det nya fordonet:");
-                string newCar = Console.ReadLine(); // Läser in det nya fordonet
-                cars[choice - 1] = newCar; // Ersätter fordonet på vald plats
-                Console.WriteLine($"Fordonet på plats {choice} har ersatts med {newCar}.");
-            }
-            else
-            {
-                Console.WriteLine("Felaktigt val, försök igen.");
-            }
+            Console.WriteLine($"Figur: {figur.getFigureName()}");
+            Console.WriteLine($"Omkrets: {figur.getOmkrets()}");
+            Console.WriteLine($"Area: {figur.getArea()}");
+            Console.WriteLine();
         }
     }
 }
